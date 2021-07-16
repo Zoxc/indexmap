@@ -1,5 +1,5 @@
 // We *mostly* avoid unsafe code, but `map::core::raw` allows it to use `RawTable` buckets.
-#![deny(unsafe_code)]
+//#![deny(unsafe_code)]
 #![warn(rust_2018_idioms)]
 #![doc(html_root_url = "https://docs.rs/indexmap/1/")]
 #![no_std]

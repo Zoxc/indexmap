@@ -173,7 +173,9 @@ impl<K, V> IndexMapCore<K, V> {
 
         let mut indices = RawTable::with_capacity(entries.len());
         for (i, entry) in enumerate(&entries) {
-            indices.insert_no_grow(entry.hash.get(), i);
+            unsafe {
+                indices.insert_no_grow(entry.hash.get(), i);
+            }
         }
         Self { indices, entries }
     }
@@ -361,12 +363,16 @@ impl<K, V> IndexMapCore<K, V> {
 
             // Reinsert stable indices
             for (i, entry) in enumerate(start_entries) {
-                self.indices.insert_no_grow(entry.hash.get(), i);
+                unsafe {
+                    self.indices.insert_no_grow(entry.hash.get(), i);
+                }
             }
 
             // Reinsert shifted indices
             for (i, entry) in (start..).zip(shifted_entries) {
-                self.indices.insert_no_grow(entry.hash.get(), i);
+                unsafe {
+                    self.indices.insert_no_grow(entry.hash.get(), i);
+                }
             }
         } else if erased + shifted < half_capacity {
             // Find each affected index, as there are few to adjust
@@ -419,7 +425,9 @@ impl<K, V> IndexMapCore<K, V> {
         debug_assert!(self.indices.capacity() >= self.entries.len());
         for (i, entry) in enumerate(&self.entries) {
             // We should never have to reallocate, so there's no need for a real hasher.
-            self.indices.insert_no_grow(entry.hash.get(), i);
+            unsafe {
+                self.indices.insert_no_grow(entry.hash.get(), i);
+            }
         }
     }
 
